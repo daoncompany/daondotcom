@@ -40,18 +40,33 @@
   .error{color:#c0392b; font-size:13px; margin:10px 0 0}
   .msg{text-align:center; color:var(--muted); padding:40px 0}
 
-  /* 왼쪽 업체 목록 + 오른쪽 내용 */
+  /* 왼쪽(검색 + 업체 목록) + 오른쪽 내용 */
   #app{display:grid; grid-template-columns:312px 1fr; min-height:calc(100vh - 56px)}
-  aside{background:var(--white); border-right:1px solid var(--line); padding:16px 12px 16px 40px; position:sticky; top:0; height:calc(100vh - 56px); overflow-y:auto}
-  aside input{
+  /* 검색창은 위에 고정, 목록만 스크롤 (업체 100곳 이상 대비) */
+  .side{background:var(--white); border-right:1px solid var(--line); padding:16px 12px 16px 40px; position:sticky; top:0; height:calc(100vh - 56px); display:flex; flex-direction:column}
+  aside{flex:1; min-height:0; display:flex; flex-direction:column}
+  #companies{flex:1; overflow-y:auto; min-height:0; list-style:none; margin:0; padding:0}
+  .menu, .drawer-logout, .scrim{display:none}
+
+  .search{position:relative}
+  .search input{
     width:100%; height:42px; border:1px solid #d5dbe3; border-radius:8px; padding:0 12px 0 40px;
     background:#f5f7fa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b6370' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5 21 21'/%3E%3C/svg%3E") no-repeat 13px center / 18px;
-    font:inherit; font-size:15px; color:var(--ink); -webkit-appearance:none; appearance:none;
+    font:inherit; font-size:16px; color:var(--ink); -webkit-appearance:none; appearance:none;
   }
-  aside input::placeholder{color:#5b6370}
-  aside input:focus{outline:none; border-color:var(--navy); background-color:var(--white); box-shadow:0 0 0 3px rgba(18,69,114,.12)}
+  .search input::placeholder{color:#5b6370}
+  .search input:focus{outline:none; border-color:var(--navy); background-color:var(--white); box-shadow:0 0 0 3px rgba(18,69,114,.12)}
+  /* 검색 결과 드롭다운 */
+  #results{
+    position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:30;
+    list-style:none; margin:0; padding:6px; max-height:320px; overflow-y:auto;
+    background:var(--white); border:1px solid #d5dbe3; border-radius:8px; box-shadow:0 8px 24px rgba(18,69,114,.14);
+  }
+  #results button{display:block; width:100%; text-align:left; padding:9px 10px; border:0; border-radius:6px; background:none; color:var(--ink); font:inherit; font-size:15px; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  #results button:hover, #results button.active{background:var(--bg); color:var(--navy)}
+  #results .none{padding:9px 10px; color:var(--muted); font-size:14px}
+
   #count{display:block; margin:10px 0 4px; color:var(--muted); font-size:13px}
-  #companies{list-style:none; margin:0; padding:0}
   #companies button{
     display:block; width:100%; text-align:left; padding:4px 6px; border:0; border-radius:6px;
     background:none; color:var(--ink); font:inherit; font-size:15px; font-weight:700; cursor:pointer;
@@ -76,8 +91,22 @@
 
   @media (max-width:720px){
     header{padding:0 16px}
-    #app{grid-template-columns:1fr}
-    aside{position:static; height:auto; max-height:40vh; padding:12px 16px; border-right:0; border-bottom:1px solid var(--line)}
+    #app{display:block}
+    /* 모바일: 검색창은 화면 위에 그대로, 업체 목록·로그아웃은 햄버거 → 오른쪽 사이드메뉴 */
+    .side{position:static; height:auto; padding:12px 12px 0; background:none; border:0}
+    #logout{display:none}
+    .menu{display:grid; place-items:center; margin-left:auto; width:40px; height:40px; margin-right:-8px; border:0; background:none; color:var(--white); cursor:pointer}
+    .menu svg{width:24px; height:24px}
+    aside{
+      position:fixed; top:0; right:0; bottom:0; z-index:20; height:auto;
+      width:min(84vw, 320px); padding:8px 16px 16px; background:var(--white); box-shadow:-8px 0 24px rgba(0,0,0,.15);
+      transform:translateX(105%); transition:transform .25s ease; visibility:hidden;
+    }
+    body.drawer aside{transform:none; visibility:visible}
+    body.drawer{overflow:hidden}
+    body.drawer .scrim{display:block; position:fixed; inset:0; z-index:15; background:rgba(0,0,0,.4)}
+    #companies button{padding:10px 8px; font-size:16px}
+    .drawer-logout{display:block; margin-top:12px; height:44px; border:1px solid var(--line); border-radius:10px; background:var(--white); color:var(--ink); font:inherit; font-size:14px; font-weight:600; cursor:pointer}
     main{padding:12px}
     dl{grid-template-columns:1fr; gap:0}
     dd{margin-bottom:10px}
@@ -89,6 +118,9 @@
   <img src="logo.svg" alt="다온닷컴">
   <h1>사전질문지 답변 확인</h1>
   <button class="logout" id="logout" hidden>로그아웃</button>
+  <button class="menu" id="menu" hidden aria-label="업체 목록 열기" aria-controls="drawer" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
 </header>
 
 <div class="gate" id="gate" hidden>
@@ -101,12 +133,20 @@
 <p class="msg" id="msg">불러오는 중...</p>
 
 <div id="app" hidden>
-  <aside>
-    <input type="search" id="search" placeholder="업체명 검색하기" aria-label="업체명 검색">
+  <div class="side">
+  <div class="search">
+    <input type="search" id="search" placeholder="업체명 검색하기" aria-label="업체명 검색" autocomplete="off" role="combobox" aria-controls="results" aria-expanded="false">
+    <ul id="results" role="listbox" hidden></ul>
+  </div>
+  <aside id="drawer">
     <span id="count"></span>
     <ul id="companies"></ul>
+    <button class="drawer-logout" id="drawerLogout">로그아웃</button>
   </aside>
+  </div>
+  <div class="scrim" id="scrim"></div>
   <main>
+    <p class="msg" id="pick">업체를 선택해 주세요.</p>
     <div id="detail" hidden></div>
   </main>
 </div>
@@ -150,28 +190,61 @@
         $('msg').hidden = true;
         $('app').hidden = false;
         $('logout').hidden = false;
+        $('menu').hidden = false;
         renderCompanies();
+        // 모바일은 처음 들어오면 업체 목록부터 열어 줌
+        if (isMobile()) drawer(true);
       })
       .catch(function(){ $('msg').textContent = '불러오지 못했습니다. 잠시 후 새로고침해주세요.'; });
   }
 
-  // 업체명 가나다순, 검색어가 있으면 걸러서 표시
-  function renderCompanies(){
-    var rows = data.rows;
-    var q = $('search').value.trim().toLowerCase();
+  // [{i, name}] 업체명 가나다순. 같은 업체명이 여러 번 제출된 경우 제출일을 붙여 구분
+  function companies(){
     var seen = {};
-    rows.forEach(function(r){ seen[r[1]] = (seen[r[1]] || 0) + 1; });
-    var list = rows.map(function(r, i){
+    data.rows.forEach(function(r){ seen[r[1]] = (seen[r[1]] || 0) + 1; });
+    return data.rows.map(function(r, i){
       var name = r[1] || '(업체명 없음)';
-      // 같은 업체명이 여러 번 제출된 경우 제출일을 붙여 구분
       if (seen[r[1]] > 1) name += ' (' + r[0].slice(5, 10) + ')';
       return { i: i, name: name };
-    }).filter(function(c){ return c.name.toLowerCase().indexOf(q) > -1; })
-      .sort(function(a, b){ return a.name.localeCompare(b.name, 'ko'); });
-    $('count').textContent = q ? list.length + ' / ' + rows.length + '곳' : rows.length + '곳';
-    $('companies').innerHTML = list.length ? list.map(function(c){
-      return '<li><button data-i="' + c.i + '" class="' + (c.i === current ? 'on' : '') + '" title="' + esc(c.name) + '">' + esc(c.name) + '</button></li>';
-    }).join('') : '<li class="msg">' + (rows.length ? '검색 결과가 없습니다.' : '아직 답변이 없습니다.') + '</li>';
+    }).sort(function(a, b){ return a.name.localeCompare(b.name, 'ko'); });
+  }
+
+  function itemHtml(c, cls){
+    return '<li><button data-i="' + c.i + '" class="' + cls + '" title="' + esc(c.name) + '">' + esc(c.name) + '</button></li>';
+  }
+
+  // 사이드바(모바일은 사이드메뉴): 전체 업체 목록
+  function renderCompanies(){
+    var list = companies();
+    $('count').textContent = list.length + '곳';
+    $('companies').innerHTML = list.length
+      ? list.map(function(c){ return itemHtml(c, c.i === current ? 'on' : ''); }).join('')
+      : '<li class="msg">아직 답변이 없습니다.</li>';
+  }
+
+  // 검색창 아래 드롭다운: 검색어가 들어간 업체만
+  var active = -1;
+  function renderResults(){
+    var q = $('search').value.trim().toLowerCase().replace(/\s+/g, '');
+    active = -1;
+    if (!q) return closeResults();
+    var list = companies().filter(function(c){ return c.name.toLowerCase().replace(/\s+/g, '').indexOf(q) > -1; });
+    $('results').innerHTML = list.length
+      ? list.map(function(c){ return itemHtml(c, ''); }).join('')
+      : '<li class="none">검색 결과가 없습니다.</li>';
+    $('results').hidden = false;
+    $('search').setAttribute('aria-expanded', 'true');
+  }
+  function closeResults(){
+    $('results').hidden = true;
+    $('search').setAttribute('aria-expanded', 'false');
+  }
+  function moveActive(step){
+    var items = $('results').querySelectorAll('button');
+    if (!items.length) return;
+    active = (active + step + items.length) % items.length;
+    [].forEach.call(items, function(b, k){ b.classList.toggle('active', k === active); });
+    items[active].scrollIntoView({ block: 'nearest' });
   }
 
   // 화면·메모장 공통: [섹션 제목, [[질문, 답변], ...]]
@@ -195,7 +268,18 @@
         }).join('') + '</dl></section>';
       }).join('');
     $('detail').hidden = false;
+    $('pick').hidden = true;
+    drawer(false);
     window.scrollTo(0, 0);
+  }
+
+  function isMobile(){ return matchMedia('(max-width:720px)').matches; }
+
+  // 모바일 사이드메뉴 열기·닫기
+  function drawer(open){
+    if (open) closeResults();
+    document.body.classList.toggle('drawer', open);
+    $('menu').setAttribute('aria-expanded', open);
   }
 
   function download(){
@@ -215,7 +299,28 @@
     URL.revokeObjectURL(a.href);
   }
 
-  $('search').addEventListener('input', renderCompanies);
+  $('search').addEventListener('input', renderResults);
+  $('search').addEventListener('focus', renderResults);
+  $('search').addEventListener('keydown', function(e){
+    if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); moveActive(-1); }
+    else if (e.key === 'Enter') {
+      var b = $('results').querySelectorAll('button')[Math.max(active, 0)];
+      if (b && !$('results').hidden) b.click();
+    }
+    else if (e.key === 'Escape') closeResults();
+  });
+  // 드롭다운을 누르는 동안 검색창 포커스 유지, 바깥을 누르면 닫힘
+  $('results').addEventListener('mousedown', function(e){ e.preventDefault(); });
+  $('results').addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b) return;
+    $('search').value = '';
+    closeResults();
+    $('search').blur();
+    show(+b.dataset.i);
+  });
+  $('search').addEventListener('blur', closeResults);
   $('companies').addEventListener('click', function(e){
     var b = e.target.closest('button');
     if (b) show(+b.dataset.i);
@@ -229,10 +334,15 @@
     localStorage.setItem(KEY, pw);
     load();
   });
-  $('logout').addEventListener('click', function(){
+  function logout(){
     localStorage.removeItem(KEY);
     location.reload();
-  });
+  }
+  $('logout').addEventListener('click', logout);
+  $('drawerLogout').addEventListener('click', logout);
+  $('menu').addEventListener('click', function(){ drawer(true); });
+  $('scrim').addEventListener('click', function(){ drawer(false); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') drawer(false); });
   $('pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('enter').click(); });
 
   load();
