@@ -27,6 +27,8 @@
   header{background:var(--navy); color:var(--white); height:56px; padding:0 20px 0 48px; display:flex; align-items:center; gap:12px}
   header img{width:26px; filter:brightness(0) invert(1)}
   header h1{margin:0; font-size:16px; font-weight:700}
+  .logout{margin-left:auto; height:32px; padding:0 14px; border:1px solid rgba(255,255,255,.6); border-radius:8px; background:none; color:var(--white); font:inherit; font-size:13px; font-weight:600; cursor:pointer}
+  .logout:hover{background:rgba(255,255,255,.12)}
 
   .btn{height:44px; padding:0 18px; border:0; border-radius:10px; background:var(--navy); color:var(--white); font:inherit; font-size:14px; font-weight:700; cursor:pointer}
   .gate{max-width:400px; margin:60px auto 0; background:var(--white); border:1px solid var(--line); border-radius:14px; padding:20px}
@@ -81,6 +83,7 @@
 <header>
   <img src="logo.svg" alt="다온닷컴">
   <h1>사전질문지 답변 확인</h1>
+  <button class="logout" id="logout" hidden>로그아웃</button>
 </header>
 
 <div class="gate" id="gate" hidden>
@@ -141,6 +144,7 @@
         data = res;
         $('msg').hidden = true;
         $('app').hidden = false;
+        $('logout').hidden = false;
         renderCompanies();
       })
       .catch(function(){ $('msg').textContent = '불러오지 못했습니다. 잠시 후 새로고침해주세요.'; });
@@ -219,6 +223,10 @@
     if (!pw) return;
     localStorage.setItem(KEY, pw);
     load();
+  });
+  $('logout').addEventListener('click', function(){
+    localStorage.removeItem(KEY);
+    location.reload();
   });
   $('pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('enter').click(); });
 
