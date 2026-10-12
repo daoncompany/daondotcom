@@ -20,16 +20,16 @@
   html,body{margin:0}
   [hidden]{display:none !important}
   body{
-    background:var(--bg); color:var(--ink);
+    background:var(--navy); color:var(--ink);
     font-family:'Pretendard Variable',Pretendard,-apple-system,'Malgun Gothic',sans-serif;
     font-size:15px; line-height:1.6; letter-spacing:-0.02em;
     -webkit-font-smoothing:antialiased; word-break:keep-all;
   }
-  header{background:var(--navy); color:var(--white); height:56px; padding:0 20px 0 48px; display:flex; align-items:center; gap:12px}
-  header img{width:32px; filter:brightness(0) invert(1)}
+  header{background:var(--white); color:var(--navy); border-bottom:1px solid var(--line); height:56px; padding:0 20px 0 48px; display:flex; align-items:center; gap:12px}
+  header img{width:32px}
   header h1{margin:0; font-size:16px; font-weight:700}
-  .logout{margin-left:auto; height:32px; padding:0 14px; border:1px solid rgba(255,255,255,.6); border-radius:8px; background:none; color:var(--white); font:inherit; font-size:13px; font-weight:600; cursor:pointer}
-  .logout:hover{background:rgba(255,255,255,.12)}
+  .logout{margin-left:auto; height:32px; padding:0 14px; border:1px solid var(--navy); border-radius:8px; background:none; color:var(--navy); font:inherit; font-size:13px; font-weight:600; cursor:pointer}
+  .logout:hover{background:var(--bg)}
 
   .btn{height:44px; padding:0 18px; border:0; border-radius:10px; background:var(--navy); color:var(--white); font:inherit; font-size:14px; font-weight:700; cursor:pointer}
   .gate{max-width:400px; margin:60px auto 0; background:var(--white); border:1px solid var(--line); border-radius:14px; padding:20px}
@@ -38,7 +38,7 @@
   .gate input:focus{outline:none; border-color:var(--navy)}
   .gate .btn{width:100%; height:48px; margin-top:10px}
   .error{color:#c0392b; font-size:13px; margin:10px 0 0}
-  .msg{text-align:center; color:var(--muted); padding:40px 0}
+  .msg{text-align:center; color:rgba(255,255,255,.75); padding:40px 0}
 
   /* 왼쪽(검색 + 업체 목록) + 오른쪽 내용 */
   #app{display:grid; grid-template-columns:312px 1fr; min-height:calc(100vh - 56px)}
@@ -95,7 +95,7 @@
     /* 모바일: 검색창은 화면 위에 그대로, 업체 목록·로그아웃은 햄버거 → 오른쪽 사이드메뉴 */
     .side{position:static; height:auto; padding:12px 12px 0; background:none; border:0}
     #logout{display:none}
-    .menu{display:grid; place-items:center; margin-left:auto; width:40px; height:40px; margin-right:-8px; border:0; background:none; color:var(--white); cursor:pointer}
+    .menu{display:grid; place-items:center; margin-left:auto; width:40px; height:40px; margin-right:-8px; border:0; background:none; color:var(--navy); cursor:pointer}
     .menu svg{width:24px; height:24px}
     aside{
       position:fixed; top:0; right:0; bottom:0; z-index:20; height:auto;
