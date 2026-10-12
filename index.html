@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다온닷컴 마케팅 사전 정보 요청서</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" integrity="sha384-GIdEBaqGN9mNkDkMkzMHW8EKUqtpPIe/sLj1X7DIrnc9uPtLROJgmuDlh+3rBw0j" crossorigin="anonymous">
+<style>
+  /* 모바일 기준 디자인 — PC에서도 휴대폰 너비(480px)로 보여줌 */
+  :root{
+    --navy:#164673;
+    --navy-10:#eaf0f6;
+    --ink:#121212;
+    --muted:#6b7280;
+    --line:#dfe4ea;
+    --bg:#f3f5f8;
+    --white:#ffffff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Malgun Gothic',sans-serif;
+    font-size:16px; line-height:1.6; letter-spacing:-0.02em;
+    -webkit-font-smoothing:antialiased; word-break:keep-all;
+  }
+  .wrap{max-width:480px; margin:0 auto; background:var(--bg); min-height:100vh}
+
+  header{background:var(--navy); color:var(--white); padding:40px 20px 32px; text-align:center}
+  header img{width:48px; height:auto; filter:brightness(0) invert(1)}
+  header h1{margin:14px 0 0; font-size:22px; font-weight:700; letter-spacing:-0.03em}
+
+  form, #done{padding:16px 16px calc(32px + env(safe-area-inset-bottom))}
+
+  .card{background:var(--white); border-radius:16px; padding:24px 18px; margin-bottom:12px}
+  .intro p{margin:0 0 12px; font-size:15px}
+  .intro p:last-child{margin:0}
+  .intro strong{color:var(--navy)}
+  .intro .note{background:var(--navy-10); border-radius:12px; padding:14px; font-size:14px}
+
+  h2{margin:0 0 4px; font-size:18px; font-weight:700; line-height:1.4; display:flex; align-items:flex-start; gap:10px}
+  h2 .no{
+    flex:none; min-width:30px; height:26px; border-radius:8px;
+    background:var(--navy); color:var(--white);
+    font-size:13px; display:grid; place-items:center; margin-top:1px;
+  }
+  .desc{margin:4px 0 0; color:var(--muted); font-size:14px; line-height:1.55}
+
+  .f{display:block; margin-top:26px}
+  .f > span{display:block; font-weight:600; font-size:15px; margin-bottom:8px}
+  .f b{color:var(--navy)}
+  .f > span small{display:block; font-weight:400; color:var(--muted); font-size:13px; line-height:1.55; margin-top:4px}
+  .f > span em{font-style:normal; font-weight:400; color:var(--muted); font-size:13px}
+
+  /* 16px 이상이어야 아이폰에서 입력 시 화면이 확대되지 않음 */
+  input[type=text], input[type=tel], textarea{
+    width:100%; font:inherit; font-size:16px; color:inherit;
+    border:1px solid var(--line); border-radius:12px; background:var(--white);
+    min-height:52px; padding:13px 14px;
+    -webkit-appearance:none; appearance:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  textarea{min-height:100px; resize:vertical; display:block}
+  input:focus, textarea:focus{outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(22,70,115,.12)}
+  ::placeholder{color:#a3a9b1}
+  .sub{margin-top:8px}
+
+  /* 선택지: 손가락으로 누르기 쉬운 2칸 버튼 */
+  .opts{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .opts.c3{grid-template-columns:1fr 1fr 1fr}
+  .opts label{position:relative; display:block}
+  .opts input{position:absolute; opacity:0; inset:0; margin:0}
+  .opts span{
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    min-height:50px; height:100%; padding:8px 10px;
+    border:1px solid var(--line); border-radius:12px; background:var(--white);
+    font-size:15px; line-height:1.35; cursor:pointer; transition:all .15s;
+  }
+  .opts input:checked + span{background:var(--navy); border-color:var(--navy); color:var(--white); font-weight:600}
+  .opts input:focus-visible + span{box-shadow:0 0 0 3px rgba(22,70,115,.25)}
+
+  .materials ul{margin:12px 0 0; padding-left:20px; font-size:15px}
+  .materials p{margin:12px 0 0; font-size:15px}
+  .sign{text-align:center; padding:12px 0 20px}
+  .sign img{width:56px}
+
+  button{
+    width:100%; font:inherit; font-size:17px; font-weight:700;
+    background:var(--navy); color:var(--white); border:0; border-radius:14px;
+    min-height:56px; cursor:pointer;
+  }
+  button:active{opacity:.85}
+  button:disabled{opacity:.5; cursor:default}
+
+  #done{display:none}
+  #done .card{text-align:center; padding:48px 20px}
+  #done h2{justify-content:center; font-size:20px; margin-bottom:10px}
+  #done p{margin:0; color:var(--muted); font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.svg" alt="다온닷컴">
+  <h1>마케팅 진행 전 사전 정보 요청서</h1>
+</header>
+<div class="wrap">
+
+  <form id="form" novalidate>
+    <section class="card intro">
+      <p><strong>안녕하세요. 다온닷컴입니다.</strong></p>
+      <p>원활한 마케팅 진행과 정확한 업체 정보 전달을 위해 사전 정보 작성을 요청드립니다.</p>
+      <p>전달해 주신 내용은 블로그, SNS, 지역 커뮤니티 등 다양한 홍보 콘텐츠 제작과 네이버 플레이스 정보 개선을 위한 기초 자료로 활용됩니다.</p>
+      <p>업체만의 장점이나 특별히 강조하고 싶은 부분은 최대한 자세히 작성해 주시면 마케팅 진행에 많은 도움이 됩니다.</p>
+      <p class="note">해당하지 않는 항목은 <strong>‘해당 없음’</strong>으로 기재해 주셔도 됩니다.</p>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">01</span>업체 기본 정보</h2>
+      <label class="f"><span>1. 업체명 <b>*</b></span><input type="text" name="업체명" required></label>
+      <label class="f"><span>2. 업체 주소</span><input type="text" name="업체 주소"></label>
+      <label class="f"><span>3. 찾아오시는 길 및 접근성<small>인근 지하철역 및 출구, 도보 소요 시간<br>인근 버스정류장 및 주요 건물<br>처음 방문하는 고객이 참고할 만한 위치 안내</small></span><textarea name="찾아오시는 길"></textarea></label>
+      <label class="f"><span>4. 문의 전화번호</span><input type="tel" name="문의 전화번호"></label>
+      <label class="f"><span>5. 영업시간 및 정기 휴무일<small>요일별 영업시간<br>브레이크타임, 라스트오더 등 해당 사항</small></span><textarea name="영업시간·휴무일"></textarea></label>
+      <label class="f"><span>6. 예약 및 방문 방법<small>네이버 예약 / 전화 예약 / 현장 방문<br>100% 예약제 여부 및 당일 예약 가능 여부</small></span><textarea name="예약·방문 방법"></textarea></label>
+      <label class="f"><span>7. 주차 및 주요 편의시설<small>전용 주차장, 무료 주차, 발렛파킹 등<br>엘리베이터, 화장실, 대기공간 등</small></span><textarea name="주차·편의시설"></textarea></label>
+      <label class="f"><span>8. 업체 운영 이력 및 참고사항<small>운영 기간 및 대표자 경력<br>자격증, 수상 이력, 방송 출연 이력 등<br>홍보 시 사용해야 하는 정확한 업체명, 직함, 호칭</small></span><textarea name="운영 이력·참고사항"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">02</span>매장 및 서비스 특징</h2>
+      <label class="f"><span>9. 매장 내부 및 공간의 주요 장점<small>매장의 인테리어, 분위기, 공간 구성 등 고객에게 소개하고 싶은 특징을 작성해 주세요.<br>예시: 넓은 통창, 오션뷰, 프라이빗 룸, 쾌적한 대기공간, 단체 이용 가능 공간 등</small></span><textarea name="공간 장점"></textarea></label>
+      <label class="f"><span>10. 다른 업체와 차별화되는 우리 업체만의 강점<small>동종 업종의 다른 업체와 비교했을 때 특별히 자신 있는 부분을 작성해 주세요.<br>예시: 차별화된 서비스, 전문적인 기술력, 독자적인 프로그램, 특별한 시설, 고객 맞춤 운영 등</small></span><textarea name="차별화 강점"></textarea></label>
+      <label class="f"><span>11. 대표 상품 및 주요 프로그램<small>가장 대표적으로 홍보하고 싶은 상품이나 프로그램을 소개해 주세요.<br>상품 및 프로그램명 / 주요 특징과 장점 / 추천 고객 및 기대할 수 있는 효과</small></span><textarea name="대표 상품"></textarea></label>
+      <label class="f"><span>12. 추가로 홍보하고 싶은 상품 및 프로그램<small>대표 상품 외에 인지도를 높이거나 판매를 확대하고 싶은 상품이 있다면 작성해 주세요.</small></span><textarea name="추가 홍보 상품"></textarea></label>
+      <label class="f"><span>13. 실제 고객이 많이 선택하는 인기 상품 및 프로그램<small>현재 고객에게 가장 반응이 좋은 상품이나 프로그램과 그 이유를 알려주세요.</small></span><textarea name="인기 상품"></textarea></label>
+      <div class="f"><span>14. 상품 및 서비스 가격 공개 가능 여부<small>메뉴판, 가격표, 프로그램별 금액 등을 홍보 콘텐츠에 노출해도 되는지 확인 부탁드립니다.</small></span>
+        <div class="opts c3">
+          <label><input type="radio" name="가격 공개" value="공개 가능"><span>공개 가능</span></label>
+          <label><input type="radio" name="가격 공개" value="일부 공개 가능"><span>일부 공개 가능</span></label>
+          <label><input type="radio" name="가격 공개" value="공개 불가"><span>공개 불가</span></label>
+        </div>
+        <input type="text" class="sub" name="가격 공개 참고사항" placeholder="추가 참고사항" aria-label="가격 공개 추가 참고사항">
+      </div>
+      <label class="f"><span>15. 현재 진행 중인 이벤트 및 고객 혜택<small>상시 혜택, 기간 한정 이벤트, 첫 방문 혜택, 리뷰 이벤트 등 현재 제공 중인 혜택을 작성해 주세요.<br>이벤트 내용 및 참여 조건 / 진행 기간 / 홍보 콘텐츠 내 노출 가능 여부</small></span><textarea name="이벤트·혜택"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">03</span>마케팅 방향 및 홍보 요청사항</h2>
+      <label class="f"><span>16. 주요 홍보 희망 지역<small>집중적으로 홍보하고 싶은 지역을 작성해 주세요.<br>예시: 강남구 전체, 역삼동, 강남역 인근, 분당·판교 지역 등</small></span><input type="text" name="홍보 희망 지역"></label>
+      <label class="f"><span>17. 현재 고객이 주로 방문하는 지역<small>실제로 방문하는 고객들이 많이 거주하거나 활동하는 지역을 알려주세요.</small></span><input type="text" name="고객 방문 지역"></label>
+      <label class="f"><span>18. 주요 마케팅 타깃<small>어떤 고객층을 중심으로 홍보하고 싶은지 작성해 주세요.<br>예시: 20~30대 여성, 직장인, 커플, 신혼부부, 아이 동반 가족, 40~50대 주부, 단체 모임 고객 등</small></span><input type="text" name="마케팅 타깃"></label>
+      <label class="f"><span>19. 고객들이 우리 업체를 선택하는 주요 이유<small>실제 고객 후기나 상담 과정에서 자주 언급되는 장점이 있다면 작성해 주세요.<br>예시: 친절한 상담, 합리적인 가격, 높은 만족도, 편리한 접근성, 재방문 고객이 많은 이유 등</small></span><textarea name="선택 이유"></textarea></label>
+      <label class="f"><span>20. 마케팅에서 특별히 강조하고 싶은 내용<small>이번 마케팅을 통해 가장 알리고 싶은 부분이나 우선적으로 홍보하고 싶은 사항을 작성해 주세요.</small></span><textarea name="강조 내용"></textarea></label>
+      <label class="f"><span>21. 홍보 시 주의하거나 언급하지 말아야 할 사항<small>노출을 원하지 않는 시설, 장소, 사진<br>사용을 피해야 하는 표현이나 단어<br>실제 제공하지 않는 서비스 또는 잘못 알려지기 쉬운 정보<br>기타 광고 제작 시 주의사항</small></span><textarea name="주의사항"></textarea></label>
+      <label class="f"><span>22. 추가 전달사항<small>위 질문 외에 마케팅 담당자가 반드시 알아야 할 정보가 있다면 자유롭게 작성해 주세요.</small></span><textarea name="추가 전달사항"></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">04</span>네이버 플레이스 최적화를 위한 추가 정보</h2>
+      <p class="desc">네이버 플레이스에 등록할 수 있는 업체별 상세 정보를 확인하는 항목입니다.<br>정확한 정보 등록과 고객의 이용 편의성을 높이기 위해 해당 사항을 작성해 주세요.</p>
+      <div class="f"><span>1. 매장에서 제공하는 편의시설 및 서비스 <em>(복수 선택 가능)</em></span>
+        <div class="opts">
+          <label><input type="checkbox" name="편의시설·서비스" value="단체 이용 가능"><span>단체 이용 가능</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="포장"><span>포장</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="배달"><span>배달</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="방문접수 / 출장"><span>방문접수 / 출장</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="예약 가능"><span>예약 가능</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="무선 인터넷(Wi-Fi)"><span>무선 인터넷(Wi-Fi)</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="유아시설 / 놀이방"><span>유아시설 / 놀이방</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="유아의자"><span>유아의자</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="남녀 화장실 구분"><span>남녀 화장실 구분</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="대기공간"><span>대기공간</span></label>
+          <label><input type="checkbox" name="편의시설·서비스" value="기타 편의시설"><span>기타 편의시설</span></label>
+        </div>
+        <input type="text" class="sub" name="편의시설 추가 설명" placeholder="추가 설명" aria-label="편의시설 추가 설명">
+      </div>
+      <label class="f"><span>2. 반려동물 동반 가능 여부<small>동반 가능 시 크기, 견종, 출입 가능 공간 등 제한사항도 작성해 주세요.</small></span><textarea name="반려동물 동반"></textarea></label>
+      <label class="f"><span>3. 노키즈존 운영 여부<small>운영 중인 경우 출입 제한 연령이나 구역을 작성해 주세요.</small></span><input type="text" name="노키즈존"></label>
+      <label class="f"><span>4. 주차장 상세 정보<small>주차 가능 여부<br>무료 / 유료 및 무료 주차 지원 시간<br>주차 가능 대수<br>발렛파킹 가능 여부 및 비용</small></span><textarea name="주차장 상세"></textarea></label>
+      <label class="f"><span>5. 인근 대체 주차장 정보<small>자체 주차장 외 이용 가능한 주차장이 있다면 작성해 주세요.<br>주차장명 및 위치 / 주차 요금 / 매장까지 도보 소요 시간</small></span><textarea name="대체 주차장"></textarea></label>
+      <label class="f"><span>6. 장애인 편의시설<small>휠체어 출입 가능 여부, 경사로, 장애인 화장실, 장애인 전용 주차구역 등</small></span><textarea name="장애인 편의시설"></textarea></label>
+      <div class="f"><span>7. 이용 가능한 결제수단 <em>(복수 선택 가능)</em></span>
+        <div class="opts">
+          <label><input type="checkbox" name="결제수단" value="현금 / 신용카드"><span>현금 / 신용카드</span></label>
+          <label><input type="checkbox" name="결제수단" value="지역화폐(지류형)"><span>지역화폐(지류형)</span></label>
+          <label><input type="checkbox" name="결제수단" value="지역화폐(카드형)"><span>지역화폐(카드형)</span></label>
+          <label><input type="checkbox" name="결제수단" value="지역화폐(모바일형)"><span>지역화폐(모바일형)</span></label>
+          <label><input type="checkbox" name="결제수단" value="제로페이"><span>제로페이</span></label>
+          <label><input type="checkbox" name="결제수단" value="간편결제"><span>간편결제</span></label>
+          <label><input type="checkbox" name="결제수단" value="정책지원금 및 지역별 지원 결제수단"><span>정책지원금 및 지역별 지원 결제수단</span></label>
+          <label><input type="checkbox" name="결제수단" value="기타"><span>기타</span></label>
+        </div>
+        <input type="text" class="sub" name="결제수단 추가 설명" placeholder="추가 설명" aria-label="결제수단 추가 설명">
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">05</span>음식점 및 카페 전용 추가 정보</h2>
+      <p class="desc">※ 해당 업종에 한하여 작성 부탁드립니다.</p>
+      <div class="f"><span>1. 좌석 및 공간 구성</span>
+        <input type="text" name="룸 인원" placeholder="룸: 최소 ○명 ~ 최대 ○명" aria-label="룸 인원">
+        <input type="text" class="sub" name="단체석 인원" placeholder="단체석: 최소 ○명 ~ 최대 ○명" aria-label="단체석 인원">
+        <input type="text" class="sub" name="전체 수용 인원" placeholder="전체 수용 가능 인원: ○명" aria-label="전체 수용 인원">
+      </div>
+      <div class="f"><span>좌석 형태 <em>(복수 선택 가능)</em></span>
+        <div class="opts">
+          <label><input type="checkbox" name="좌석 형태" value="카운터석"><span>카운터석</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="1인석"><span>1인석</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="바 테이블"><span>바 테이블</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="좌식 테이블"><span>좌식 테이블</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="입식 테이블"><span>입식 테이블</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="테라스석"><span>테라스석</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="커플석 / 연인석"><span>커플석 / 연인석</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="루프탑 좌석"><span>루프탑 좌석</span></label>
+          <label><input type="checkbox" name="좌석 형태" value="기타"><span>기타</span></label>
+        </div>
+        <input type="text" class="sub" name="좌석 추가 설명" placeholder="추가 설명" aria-label="좌석 추가 설명">
+      </div>
+      <div class="f"><span>2. 추가 제공 서비스 <em>(복수 선택 가능)</em></span>
+        <div class="opts">
+          <label><input type="checkbox" name="추가 제공 서비스" value="드라이브스루"><span>드라이브스루</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="생일 / 기념일 혜택"><span>생일 / 기념일 혜택</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="와인 페어링"><span>와인 페어링</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="전문 소믈리에"><span>전문 소믈리에</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="무한리필"><span>무한리필</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="글루텐프리 메뉴"><span>글루텐프리 메뉴</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="비건 메뉴"><span>비건 메뉴</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="유기농 메뉴"><span>유기농 메뉴</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="테이크아웃 할인"><span>테이크아웃 할인</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="자체 로스팅(로스터리)"><span>자체 로스팅(로스터리)</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="핸드드립 커피"><span>핸드드립 커피</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="키즈메뉴"><span>키즈메뉴</span></label>
+          <label><input type="checkbox" name="추가 제공 서비스" value="기타"><span>기타</span></label>
+        </div>
+        <input type="text" class="sub" name="서비스 추가 설명" placeholder="추가 설명" aria-label="추가 제공 서비스 추가 설명">
+      </div>
+      <label class="f"><span>3. 대관 및 단체 예약 가능 여부<small>대관이 가능한 경우 아래 내용을 함께 작성해 주세요.<br>최소 및 최대 이용 인원 / 이용 가능 요일 및 시간 / 대관 비용 및 별도 조건</small></span><textarea name="대관·단체 예약"></textarea></label>
+      <label class="f"><span>4. 주류 주문 필수 여부<small>식사 또는 매장 이용 시 주류 주문이 필수인지 확인 부탁드립니다.</small></span><input type="text" name="주류 주문 필수"></label>
+      <label class="f"><span>5. 콜키지 가능 여부<small>외부 주류 반입이 가능한 경우 아래 내용을 작성해 주세요.<br>반입 가능한 주류 종류 / 반입 가능 병 수 / 병당 콜키지 비용 / 매장에서 판매 중인 동일 주류 반입 가능 여부</small></span><textarea name="콜키지"></textarea></label>
+    </section>
+
+    <section class="card materials">
+      <h2>작성 및 자료 전달 안내</h2>
+      <p>보다 정확하고 자연스러운 마케팅 콘텐츠 제작을 위해 가능하시다면 아래 자료도 함께 전달 부탁드립니다.</p>
+      <ul>
+        <li>매장 외관 및 내부 사진</li>
+        <li>대표 상품, 메뉴 및 프로그램 사진</li>
+        <li>최신 메뉴판 및 가격표</li>
+        <li>진행 중인 이벤트 안내 이미지</li>
+        <li>업체 로고 및 공식 홍보 자료</li>
+        <li>기타 고객에게 소개하고 싶은 사진이나 자료</li>
+      </ul>
+      <p>전달해 주신 내용을 바탕으로 업체의 실제 특징과 장점이 자연스럽게 드러날 수 있도록 마케팅을 진행하겠습니다.<br>감사합니다.</p>
+    </section>
+
+    <div class="sign"><img src="logo.svg" alt="다온닷컴"></div>
+
+    <button type="submit" id="btn">제출하기</button>
+  </form>
+
+  <section id="done"><div class="card">
+    <h2>제출이 완료되었습니다</h2>
+    <p>전달해 주신 내용을 바탕으로<br>마케팅을 진행하겠습니다.<br>감사합니다!</p>
+  </div></section>
+</div>
+
+<script>
+  // Apps Script 웹 앱 주소 (Code.gs 배포)
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwHJfkt-c1TrxOx1HABW4Xhv4j9DCZPRCLWF8GMNEXw27i6f1dwyOojpYzbD53XHrXm/exec';
+  // daon_presurvey 와 같은 도메인(daoncompany.github.io)이라 저장 이름을 따로 씀
+  const DRAFT = 'daondotcom-draft';
+  const form = document.getElementById('form');
+  const btn = document.getElementById('btn');
+
+  // 작성 중 내용 임시저장 (창을 닫았다 다시 열어도 유지)
+  form.addEventListener('input', () => {
+    try { localStorage.setItem(DRAFT, JSON.stringify([...new FormData(form)])); } catch {}
+  });
+  try {
+    for (const [k, v] of JSON.parse(localStorage.getItem(DRAFT) || '[]')) {
+      for (const el of form.querySelectorAll(`[name="${CSS.escape(k)}"]`)) {
+        if (el.type === 'checkbox' || el.type === 'radio') { if (el.value === v) el.checked = true; }
+        else el.value = v;
+      }
+    }
+  } catch {}
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = form.elements['업체명'];
+    if (!name.value.trim()) {
+      alert('업체명을 입력해주세요.');
+      name.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      name.focus({ preventScroll: true });
+      return;
+    }
+
+    // 같은 이름(복수 선택)은 쉼표로 합쳐서 한 칸에 저장
+    const grouped = {};
+    for (const [k, v] of new FormData(form)) if (v.trim()) (grouped[k] ||= []).push(v.trim());
+    const body = new URLSearchParams();
+    for (const k in grouped) body.append(k, grouped[k].join(', '));
+
+    btn.disabled = true;
+    btn.textContent = '전송 중...';
+    try {
+      await fetch(WEBAPP_URL, { method: 'POST', mode: 'no-cors', body });
+      try { localStorage.removeItem(DRAFT); } catch {}
+      form.style.display = 'none';
+      document.getElementById('done').style.display = 'block';
+      window.scrollTo(0, 0);
+    } catch {
+      alert('전송에 실패했습니다. 인터넷 연결을 확인한 뒤 다시 시도해주세요.');
+      btn.disabled = false;
+      btn.textContent = '제출하기';
+    }
+  });
+</script>
+</body>
+</html>
