@@ -274,6 +274,19 @@
   const form = document.getElementById('form');
   const btn = document.getElementById('btn');
 
+  // 전화번호 자동 대시 (입력칸을 벗어날 때) — 숫자·대시·공백만 있을 때만, 다른 글자가 섞이면 그대로 둠
+  const tel = form.elements['문의 전화번호'];
+  tel.addEventListener('change', () => {
+    if (!/^[\d\s-]+$/.test(tel.value)) return;
+    const d = tel.value.replace(/\D/g, '');
+    if (/^1[5-9]\d{6}$/.test(d)) tel.value = d.slice(0, 4) + '-' + d.slice(4);   // 1588-0000
+    else if (d.length >= 9 && d.length <= 11) {
+      const a = d.startsWith('02') ? 2 : 3;                                        // 02 / 010·031…
+      tel.value = d.slice(0, a) + '-' + d.slice(a, -4) + '-' + d.slice(-4);
+    }
+    form.dispatchEvent(new Event('input'));
+  });
+
   // 작성 중 내용 임시저장 (창을 닫았다 다시 열어도 유지)
   form.addEventListener('input', () => {
     try { localStorage.setItem(DRAFT, JSON.stringify([...new FormData(form)])); } catch {}
