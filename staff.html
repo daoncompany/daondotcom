@@ -81,6 +81,15 @@
   .detail-head h2{margin:0; font-size:26px; letter-spacing:-0.03em; line-height:1.3}
   .detail-head p{margin:2px 0 0; color:var(--muted); font-size:12px}
   .detail-head .btn{flex:none}
+  .actions{display:flex; gap:6px; flex:none}
+  .btn.del{background:var(--white); color:#c0392b; border:1px solid #c0392b}
+  .btn:disabled{opacity:.5; cursor:default}
+  #ask{border:0; border-radius:14px; padding:24px 20px 20px; width:calc(100% - 32px); max-width:360px; text-align:center}
+  #ask::backdrop{background:rgba(0,0,0,.5)}
+  #ask p{margin:0 0 18px; font-size:16px}
+  #ask form{display:flex; gap:8px}
+  #ask .btn{flex:1}
+  #ask .no{background:var(--bg); color:var(--ink)}
   section{padding:18px 0; border-bottom:1px solid var(--line)}
   section:last-child{border-bottom:0; padding-bottom:0}
   section h3{margin:0 0 10px; font-size:17px; color:var(--navy)}
@@ -150,6 +159,14 @@
     <div id="detail" hidden></div>
   </main>
 </div>
+
+<dialog id="ask">
+  <p><b>메모장 다운로드를 완료하셨나요?</b><br>'예'를 누르면 내용이 삭제됩니다.</p>
+  <form method="dialog">
+    <button class="btn no" value="no">아니오</button>
+    <button class="btn" id="yes">예</button>
+  </form>
+</dialog>
 
 <script>
 (function(){
@@ -261,7 +278,7 @@
     [].forEach.call($('companies').querySelectorAll('button'), function(b){ b.classList.toggle('on', +b.dataset.i === i); });
     $('detail').innerHTML =
       '<div class="detail-head"><div><h2>' + esc(row[1] || '(업체명 없음)') + '</h2><p>제출일시 ' + esc(row[0]) + '</p></div>' +
-      '<button class="btn" id="download">메모장 다운로드</button></div>' +
+      '<div class="actions"><button class="btn" id="download">메모장 다운로드</button><button class="btn del" id="delete">삭제</button></div></div>' +
       sectionsOf(row).map(function(s){
         return '<section><h3>' + esc(s[0]) + '</h3><dl>' + s[1].map(function(qa){
           return '<dt>' + esc(qa[0]) + '</dt>' + (qa[1] ? '<dd>' + esc(qa[1]) + '</dd>' : '<dd class="empty">—</dd>');
@@ -327,6 +344,35 @@
   });
   $('detail').addEventListener('click', function(e){
     if (e.target.id === 'download') download();
+    if (e.target.id === 'delete') $('ask').showModal();
+  });
+
+  // 삭제 확인 '예' → 구글 시트에서 해당 업체 행 삭제 (제출일시+업체명이 같은 행)
+  $('yes').addEventListener('click', function(){
+    if (current < 0) return;
+    var i = current, row = data.rows[i], btn = $('delete');
+    btn.disabled = true;
+    btn.textContent = '삭제 중...';
+    var body = new URLSearchParams({ action: 'delete', key: localStorage.getItem(KEY) || '', '제출일시': row[0], '업체명': row[1] });
+    fetch(WEBAPP_URL, { method: 'POST', body: body })
+      .then(function(r){ return r.text(); })
+      .then(function(res){
+        if (res !== 'deleted' && res !== 'notfound') throw new Error(res);
+        data.rows.splice(i, 1);
+        if (current > i) current--;          // 삭제 중에 다른 업체를 열었으면 그대로 둠
+        else if (current === i) {
+          current = -1;
+          $('detail').hidden = true;
+          $('pick').hidden = false;
+          $('pick').textContent = '삭제되었습니다. 업체를 선택해 주세요.';
+        }
+        renderCompanies();
+      })
+      .catch(function(){
+        alert('삭제하지 못했습니다. 잠시 후 다시 시도해주세요.');
+        btn.disabled = false;
+        btn.textContent = '삭제';
+      });
   });
   $('enter').addEventListener('click', function(){
     var pw = $('pw').value.trim();
