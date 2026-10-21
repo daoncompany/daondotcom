@@ -74,6 +74,9 @@
   }
   #companies button:hover{color:var(--navy); background:var(--bg)}
   #companies button.on{background:var(--navy); color:var(--white)}
+  /* 업체명 옆 업종 표시 */
+  #companies small, #results small{margin-left:6px; font-size:12px; font-weight:500; color:var(--muted)}
+  #companies button.on small{color:rgba(255,255,255,.8)}
 
   main{padding:16px 24px 60px}
   #detail{max-width:760px; margin:0 auto; background:var(--white); border-radius:14px; padding:12px 12px 24px}
@@ -203,7 +206,11 @@
           $('msg').textContent = res.error;
           return;
         }
-        data = res;
+        // 업종별 탭을 한 목록으로 — rows[i] 답변, info[i] {cat 업종, sheet 시트 탭, sections 질문}
+        data = { rows: [], info: [] };
+        (res.forms || [{ category: '요식업', sheet: '답변', sections: res.sections, rows: res.rows }]).forEach(function(f){
+          f.rows.forEach(function(r){ data.rows.push(r); data.info.push({ cat: f.category, sheet: f.sheet, sections: f.sections }); });
+        });
         $('msg').hidden = true;
         $('app').hidden = false;
         $('logout').hidden = false;
@@ -222,12 +229,12 @@
     return data.rows.map(function(r, i){
       var name = r[1] || '(업체명 없음)';
       if (seen[r[1]] > 1) name += ' (' + r[0].slice(5, 10) + ')';
-      return { i: i, name: name };
+      return { i: i, name: name, cat: data.info[i].cat };
     }).sort(function(a, b){ return a.name.localeCompare(b.name, 'ko'); });
   }
 
   function itemHtml(c, cls){
-    return '<li><button data-i="' + c.i + '" class="' + cls + '" title="' + esc(c.name) + '">' + esc(c.name) + '</button></li>';
+    return '<li><button data-i="' + c.i + '" class="' + cls + '" title="' + esc(c.name + ' · ' + c.cat) + '">' + esc(c.name) + '<small>' + esc(c.cat) + '</small></button></li>';
   }
 
   // 사이드바(모바일은 사이드메뉴): 전체 업체 목록
@@ -245,7 +252,8 @@
     var q = $('search').value.trim().toLowerCase().replace(/\s+/g, '');
     active = -1;
     if (!q) return closeResults();
-    var list = companies().filter(function(c){ return c.name.toLowerCase().replace(/\s+/g, '').indexOf(q) > -1; });
+    // 업체명 또는 업종으로 검색 ("의류" 로 의류 업체 전체)
+    var list = companies().filter(function(c){ return (c.name + c.cat).toLowerCase().replace(/\s+/g, '').indexOf(q) > -1; });
     $('results').innerHTML = list.length
       ? list.map(function(c){ return itemHtml(c, ''); }).join('')
       : '<li class="none">검색 결과가 없습니다.</li>';
@@ -265,9 +273,9 @@
   }
 
   // 화면·메모장 공통: [섹션 제목, [[질문, 답변], ...]]
-  function sectionsOf(row){
-    var col = 1;
-    return data.sections.map(function(s){
+  function sectionsOf(i){
+    var col = 1, row = data.rows[i];
+    return data.info[i].sections.map(function(s){
       return [s[0], s[1].map(function(label){ return [label, row[col++] || '']; })];
     });
   }
@@ -277,9 +285,9 @@
     var row = data.rows[i];
     [].forEach.call($('companies').querySelectorAll('button'), function(b){ b.classList.toggle('on', +b.dataset.i === i); });
     $('detail').innerHTML =
-      '<div class="detail-head"><div><h2>' + esc(row[1] || '(업체명 없음)') + '</h2><p>제출일시 ' + esc(row[0]) + '</p></div>' +
+      '<div class="detail-head"><div><h2>' + esc(row[1] || '(업체명 없음)') + '</h2><p>' + esc(data.info[i].cat) + ' · 제출일시 ' + esc(row[0]) + '</p></div>' +
       '<div class="actions"><button class="btn" id="download">메모장 다운로드</button><button class="btn del" id="delete">삭제</button></div></div>' +
-      sectionsOf(row).map(function(s){
+      sectionsOf(i).map(function(s){
         return '<section><h3>' + esc(s[0]) + '</h3><dl>' + s[1].map(function(qa){
           return '<dt>' + esc(qa[0]) + '</dt>' + (qa[1] ? '<dd>' + esc(qa[1]) + '</dd>' : '<dd class="empty">—</dd>');
         }).join('') + '</dl></section>';
@@ -301,8 +309,8 @@
 
   function download(){
     var row = data.rows[current];
-    var lines = ['제출일시: ' + row[0], ''];
-    sectionsOf(row).forEach(function(s){
+    var lines = ['업종: ' + data.info[current].cat, '제출일시: ' + row[0], ''];
+    sectionsOf(current).forEach(function(s){
       lines.push(s[0]);
       s[1].forEach(function(qa){ lines.push('- ' + qa[0] + ': ' + qa[1]); });
       lines.push('', '');
@@ -353,12 +361,13 @@
     var i = current, row = data.rows[i], btn = $('delete');
     btn.disabled = true;
     btn.textContent = '삭제 중...';
-    var body = new URLSearchParams({ action: 'delete', key: localStorage.getItem(KEY) || '', '제출일시': row[0], '업체명': row[1] });
+    var body = new URLSearchParams({ action: 'delete', key: localStorage.getItem(KEY) || '', sheet: data.info[i].sheet, '제출일시': row[0], '업체명': row[1] });
     fetch(WEBAPP_URL, { method: 'POST', body: body })
       .then(function(r){ return r.text(); })
       .then(function(res){
         if (res !== 'deleted' && res !== 'notfound') throw new Error(res);
         data.rows.splice(i, 1);
+        data.info.splice(i, 1);
         if (current > i) current--;          // 삭제 중에 다른 업체를 열었으면 그대로 둠
         else if (current === i) {
           current = -1;
